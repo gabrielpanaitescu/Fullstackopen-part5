@@ -30,19 +30,15 @@ const App = () => {
   return (
     <div>
       {user === null ? (
-        <>
-          <h2>login in to application</h2>
-          <LoginForm
-            handleLogin={handleLogin}
-            username={username}
-            setUsername={setUsername}
-            password={password}
-            setPassword={setPassword}
-          />
-        </>
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+        />
       ) : (
         <>
-          {" "}
           <h2>Blogs</h2>
           <p>{user.name} logged in</p>
           <ul>

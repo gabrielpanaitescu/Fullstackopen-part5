@@ -4,6 +4,7 @@ import blogService from "./services/blog";
 import LoginForm from "./components/LoginForm";
 import loginService from "./services/login";
 import BlogForm from "./components/BlogForm";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -13,6 +14,7 @@ const App = () => {
   const [blogTitle, setBlogTitle] = useState("");
   const [blogAuthor, setBlogAuthor] = useState("");
   const [blogUrl, setBlogUrl] = useState("");
+  const [info, setInfo] = useState({ message: null });
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -28,6 +30,14 @@ const App = () => {
     }
   }, []);
 
+  const notifyWith = (message, type = "info") => {
+    setInfo({ message, type });
+
+    setTimeout(() => {
+      setInfo({ message: null });
+    }, 3000);
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -40,7 +50,10 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
-    } catch (exception) {}
+      notifyWith(`logged in as '${user.username}'`);
+    } catch (exception) {
+      notifyWith(exception.response.data.error, "error");
+    }
   };
 
   const handleLogout = () => {
@@ -60,10 +73,14 @@ const App = () => {
     setBlogTitle("");
     setBlogAuthor("");
     setBlogUrl("");
+    notifyWith(
+      `a new blog '${newBlog.title}' by '${newBlog.author}' has been added`
+    );
   };
 
   return (
     <div>
+      <Notification info={info} />
       {user === null ? (
         <LoginForm
           handleLogin={handleLogin}

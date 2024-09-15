@@ -110,7 +110,7 @@ const App = () => {
             <h2>Create new blog</h2>
             <BlogForm createBlog={addBlog} />
           </Togglable>
-          <ul>
+          <ul style={{ padding: 0 }}>
             {blogs.map((blog) => (
               <Blog key={blog.id} blog={blog} />
             ))}

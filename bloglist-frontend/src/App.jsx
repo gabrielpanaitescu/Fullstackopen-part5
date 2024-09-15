@@ -12,9 +12,6 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [blogTitle, setBlogTitle] = useState("");
-  const [blogAuthor, setBlogAuthor] = useState("");
-  const [blogUrl, setBlogUrl] = useState("");
   const [info, setInfo] = useState({ message: null });
   const [loginVisible, setLoginVisible] = useState(false);
   const blogFormRef = useRef();
@@ -87,21 +84,13 @@ const App = () => {
     );
   };
 
-  const addBlog = async (e) => {
+  const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility();
 
-    e.preventDefault();
-
-    const newBlog = await blogService.create({
-      title: blogTitle,
-      author: blogAuthor,
-      url: blogUrl,
-    });
+    const newBlog = await blogService.create(blogObject);
 
     setBlogs(blogs.concat(newBlog));
-    setBlogTitle("");
-    setBlogAuthor("");
-    setBlogUrl("");
+
     notifyWith(
       `a new blog '${newBlog.title}' by '${newBlog.author}' has been added`
     );
@@ -119,15 +108,7 @@ const App = () => {
           <button onClick={handleLogout}>logout</button>
           <Togglable buttonLabel="create new blog" ref={blogFormRef}>
             <h2>Create new blog</h2>
-            <BlogForm
-              title={blogTitle}
-              setTitle={setBlogTitle}
-              author={blogAuthor}
-              setAuthor={setBlogAuthor}
-              url={blogUrl}
-              setUrl={setBlogUrl}
-              addBlog={addBlog}
-            />
+            <BlogForm createBlog={addBlog} />
           </Togglable>
           <ul>
             {blogs.map((blog) => (

@@ -96,6 +96,23 @@ const App = () => {
     );
   };
 
+  const updateLikesOf = async (blogId) => {
+    const blogToUpdate = blogs.find((blog) => blog.id === blogId);
+
+    const updatedBlog = {
+      ...blogToUpdate,
+      user: blogToUpdate.user.id,
+      likes: blogToUpdate.likes + 1,
+    };
+
+    try {
+      const returnedBlog = await blogService.update(blogId, updatedBlog);
+      setBlogs(blogs.map((blog) => (blog.id === blogId ? returnedBlog : blog)));
+    } catch (exception) {
+      notifyWith(exception.response.data.error, "error");
+    }
+  };
+
   return (
     <div>
       <Notification info={info} />
@@ -112,7 +129,11 @@ const App = () => {
           </Togglable>
           <ul style={{ padding: 0 }}>
             {blogs.map((blog) => (
-              <Blog key={blog.id} blog={blog} />
+              <Blog
+                key={blog.id}
+                blog={blog}
+                updateLikes={() => updateLikesOf(blog.id)}
+              />
             ))}
           </ul>
         </>

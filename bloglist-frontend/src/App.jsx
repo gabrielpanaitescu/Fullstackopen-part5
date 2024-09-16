@@ -61,29 +61,6 @@ const App = () => {
     setUser(null);
   };
 
-  const loginForm = () => {
-    const showWhenVisible = { display: loginVisible ? "" : "none" };
-    const hideWhenVisible = { display: loginVisible ? "none" : "" };
-
-    return (
-      <>
-        <div style={showWhenVisible}>
-          <LoginForm
-            handleLogin={handleLogin}
-            username={username}
-            setUsername={setUsername}
-            password={password}
-            setPassword={setPassword}
-          />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
-        </div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>login</button>
-        </div>
-      </>
-    );
-  };
-
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility();
 
@@ -113,16 +90,41 @@ const App = () => {
     }
   };
 
-  const deleteBlog = async ({ id, title, author}) => {
-    const confirmation = window.confirm(`Remove blog '${title}' by '${author}'`)
+  const deleteBlog = async ({ id, title, author }) => {
+    const confirmation = window.confirm(
+      `Remove blog '${title}' by '${author}'`
+    );
     if (!confirmation) return;
     try {
       await blogService.deleteItem(id);
-      setBlogs(blogs.filter(blog => blog.id !== id));
+      setBlogs(blogs.filter((blog) => blog.id !== id));
     } catch (exception) {
-      notifyWith(exception.response.data.error, 'error');
+      notifyWith(exception.response.data.error, "error");
     }
-  }
+  };
+
+  const loginForm = () => {
+    const showWhenVisible = { display: loginVisible ? "" : "none" };
+    const hideWhenVisible = { display: loginVisible ? "none" : "" };
+
+    return (
+      <>
+        <div style={showWhenVisible}>
+          <LoginForm
+            handleLogin={handleLogin}
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>login</button>
+        </div>
+      </>
+    );
+  };
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
 
@@ -147,7 +149,9 @@ const App = () => {
                 blog={blog}
                 updateLikes={() => updateLikesOf(blog.id)}
               >
-                {user.username === blog.user.username && <button onClick={() => deleteBlog(blog)}>remove</button>}
+                {user.username === blog.user.username && (
+                  <button onClick={() => deleteBlog(blog)}>remove</button>
+                )}
               </Blog>
             ))}
           </ul>

@@ -17,8 +17,7 @@ const Blog = ({ blog, updateLikes, children }) => {
   return (
     <li style={blogStyle}>
       <div>
-        <span data-testid="blogTitle">{blog.title}</span>{" "}
-        <span>{blog.author}</span>{" "}
+        <span>{blog.title}</span> <span>{blog.author}</span>{" "}
         <button onClick={toggleShow}>{show ? "hide" : "show"}</button>
       </div>
       {show && (

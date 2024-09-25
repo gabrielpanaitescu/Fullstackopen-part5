@@ -13,7 +13,7 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [info, setInfo] = useState({ message: null });
-  const [loginVisible, setLoginVisible] = useState(false);
+  const [loginVisible, setLoginVisible] = useState(true);
   const blogFormRef = useRef();
 
   useEffect(() => {
@@ -127,6 +127,8 @@ const App = () => {
   };
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
+
+  console.log(sortedBlogs);
 
   return (
     <div>

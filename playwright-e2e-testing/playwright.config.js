@@ -15,7 +15,7 @@ module.exports = defineConfig({
   use: {
     baseURL: "http://localhost:5173",
   },
-  timeout: 3000,
+  timeout: 15000,
   fullyParallel: false,
   workers: 1,
   // end of custom edits

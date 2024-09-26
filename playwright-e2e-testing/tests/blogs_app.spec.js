@@ -73,6 +73,45 @@ describe("Blog app", () => {
         await targetBlogElem.getByRole("button", { name: "like" }).click();
         await expect(targetBlogElem.getByText("1")).toBeVisible();
       });
+
+      test("user that created the blog can delete it", async ({ page }) => {
+        page.on("dialog", async (dialog) => {
+          expect(dialog.type()).toBe("confirm");
+          await dialog.accept();
+        });
+
+        const targetBlogElem = await page
+          .locator("li")
+          .filter({ hasText: "First blog" });
+        await targetBlogElem.getByRole("button", { name: "show" }).click();
+        await targetBlogElem.getByRole("button", { name: "remove" }).click();
+
+        await expect(page.getByText("First blog")).not.toBeVisible();
+      });
+
+      test("and logs out and back in using another user, blogs cannot be deleted", async ({
+        page,
+        request,
+      }) => {
+        await request.post("/api/users", {
+          data: {
+            username: "another_test_user",
+            password: "test1234!",
+            name: "Another test user",
+          },
+        });
+
+        await page.getByRole("button", { name: "logout" }).click();
+        await loginWith(page, "another_test_user", "test1234!");
+        const targetBlogElem = await page
+          .locator("li")
+          .filter({ hasText: "First blog" });
+
+        await targetBlogElem.getByRole("button", { name: "show" }).click();
+        await expect(
+          targetBlogElem.getByRole("button", { name: "remove" })
+        ).not.toBeVisible();
+      });
     });
   });
 });

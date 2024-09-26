@@ -23,7 +23,7 @@ const Blog = ({ blog, updateLikes, children }) => {
       {show && (
         <>
           <p>{blog.url}</p>
-          <div>
+          <div className="likesDiv">
             {blog.likes} <button onClick={updateLikes}>like</button>
           </div>
           <p>{blog.user.name}</p>

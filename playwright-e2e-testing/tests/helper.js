@@ -13,7 +13,26 @@ const createBlog = async (page, title, author, url) => {
   await page.locator("li").getByText(title).waitFor();
 };
 
+const likeBlog = async (blogElem, times = 1) => {
+  const likeButton = blogElem.getByRole("button", { name: "like" });
+  const likesDiv = blogElem.locator(".likesDiv");
+
+  for (let i = 0; i < times; i++) {
+    const currentLikes = await likesDiv.textContent();
+    await likeButton.click();
+
+    await blogElem.page().waitForFunction(
+      ([likesLocator, currentLikesValue]) => {
+        const newLikes = likesLocator.textContent().trim();
+        return parseInt(newLikes) > parseInt(currentLikesValue);
+      },
+      [likesDiv, currentLikes]
+    );
+  }
+};
+
 module.exports = {
   loginWith,
   createBlog,
+  // likeBlog,
 };

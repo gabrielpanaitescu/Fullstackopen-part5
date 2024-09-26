@@ -1,5 +1,5 @@
 const { test, describe, expect, beforeEach } = require("@playwright/test");
-const { loginWith, createBlog } = require("./helper");
+const { loginWith, createBlog, likeBlog } = require("./helper");
 
 describe("Blog app", () => {
   beforeEach(async ({ page, request }) => {
@@ -111,6 +111,46 @@ describe("Blog app", () => {
         await expect(
           targetBlogElem.getByRole("button", { name: "remove" })
         ).not.toBeVisible();
+      });
+
+      test("blogs are sorted by the most liked", async ({ page }) => {
+        const firstBlogElem = await page
+          .locator("li")
+          .filter({ hasText: "First blog" });
+        await firstBlogElem.getByRole("button", { name: "show" }).click();
+        await firstBlogElem.getByRole("button", { name: "like" }).click();
+        await expect(firstBlogElem.locator(".likesDiv")).toHaveText("1 like");
+
+        const secondBlogElem = await page
+          .locator("li")
+          .filter({ hasText: "Second blog" });
+        await secondBlogElem.getByRole("button", { name: "show" }).click();
+        for (let i = 1; i <= 3; i++) {
+          await secondBlogElem.getByRole("button", { name: "like" }).click();
+          await expect(secondBlogElem.locator(".likesDiv")).toHaveText(
+            `${i} like`
+          );
+        }
+
+        const thirdBlogElem = await page
+          .locator("li")
+          .filter({ hasText: "Third blog" });
+        await thirdBlogElem.getByRole("button", { name: "show" }).click();
+        for (let i = 1; i <= 2; i++) {
+          await thirdBlogElem.getByRole("button", { name: "like" }).click();
+          await expect(thirdBlogElem.locator(".likesDiv")).toHaveText(
+            `${i} like`
+          );
+        }
+
+        const likesDivArr = await page.evaluate(() => {
+          const likesDivCollection = document.querySelectorAll(".likesDiv");
+          return Array.from(likesDivCollection).map((elem) =>
+            elem.textContent.trim()
+          );
+        });
+
+        expect(likesDivArr).toEqual(["3 like", "2 like", "1 like"]);
       });
     });
   });

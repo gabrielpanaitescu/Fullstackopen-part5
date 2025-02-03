@@ -24,6 +24,7 @@ const BlogForm = ({ createBlog }) => {
       <div>
         <label htmlFor="title">title: </label>
         <input
+          required
           id="title"
           name="title"
           value={title}
@@ -42,13 +43,16 @@ const BlogForm = ({ createBlog }) => {
       <div>
         <label htmlFor="url">url: </label>
         <input
+          required
           id="url"
           name="url"
           value={url}
           onChange={({ target }) => setUrl(target.value)}
         />
       </div>
-      <button type="submit">create blog</button>
+      <button type="submit" data-testid="blog-submit-button">
+        create blog
+      </button>
     </form>
   );
 };

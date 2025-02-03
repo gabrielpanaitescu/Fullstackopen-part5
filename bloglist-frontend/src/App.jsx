@@ -128,8 +128,6 @@ const App = () => {
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
 
-  console.log(sortedBlogs);
-
   return (
     <div>
       <Notification info={info} />

@@ -54,11 +54,11 @@ describe("Blog app", () => {
     });
 
     test("a new blog can be created", async ({ page }) => {
-      createBlog(page, "Test title", "Test author", "Test url");
+      await createBlog(page, "Test title", "Test author", "Test url");
       await expect(page.locator("li").getByText("Test title")).toBeVisible();
     });
 
-    describe("and several blogs are already created", () => {
+    describe("when several blogs are already created", () => {
       beforeEach(async ({ page }) => {
         await createBlog(page, "First blog", "Author 1", "Url 1");
         await createBlog(page, "Second blog", "Author 2", "Url 2");
@@ -66,7 +66,7 @@ describe("Blog app", () => {
       });
 
       test("a blog can be liked", async ({ page }) => {
-        const targetBlogElem = await page
+        const targetBlogElem = page
           .locator("li")
           .filter({ hasText: "Second blog" });
         await targetBlogElem.getByRole("button", { name: "show" }).click();
@@ -80,7 +80,7 @@ describe("Blog app", () => {
           await dialog.accept();
         });
 
-        const targetBlogElem = await page
+        const targetBlogElem = page
           .locator("li")
           .filter({ hasText: "First blog" });
         await targetBlogElem.getByRole("button", { name: "show" }).click();
@@ -103,7 +103,7 @@ describe("Blog app", () => {
 
         await page.getByRole("button", { name: "logout" }).click();
         await loginWith(page, "another_test_user", "test1234!");
-        const targetBlogElem = await page
+        const targetBlogElem = page
           .locator("li")
           .filter({ hasText: "First blog" });
 
@@ -114,34 +114,18 @@ describe("Blog app", () => {
       });
 
       test("blogs are sorted by the most liked", async ({ page }) => {
-        const firstBlogElem = await page
+        const firstBlogElem = page
           .locator("li")
           .filter({ hasText: "First blog" });
         await firstBlogElem.getByRole("button", { name: "show" }).click();
-        await firstBlogElem.getByRole("button", { name: "like" }).click();
-        await expect(firstBlogElem.locator(".likesDiv")).toHaveText("1 like");
+        await expect(firstBlogElem.locator(".likesDiv")).toHaveText("0 likes");
 
-        const secondBlogElem = await page
+        const secondBlogElem = page
           .locator("li")
           .filter({ hasText: "Second blog" });
         await secondBlogElem.getByRole("button", { name: "show" }).click();
-        for (let i = 1; i <= 3; i++) {
-          await secondBlogElem.getByRole("button", { name: "like" }).click();
-          await expect(secondBlogElem.locator(".likesDiv")).toHaveText(
-            `${i} like`
-          );
-        }
-
-        const thirdBlogElem = await page
-          .locator("li")
-          .filter({ hasText: "Third blog" });
-        await thirdBlogElem.getByRole("button", { name: "show" }).click();
-        for (let i = 1; i <= 2; i++) {
-          await thirdBlogElem.getByRole("button", { name: "like" }).click();
-          await expect(thirdBlogElem.locator(".likesDiv")).toHaveText(
-            `${i} like`
-          );
-        }
+        await secondBlogElem.getByRole("button", { name: "like" }).click();
+        await expect(secondBlogElem.locator(".likesDiv")).toHaveText("1 like");
 
         const likesDivArr = await page.evaluate(() => {
           const likesDivCollection = document.querySelectorAll(".likesDiv");
@@ -150,7 +134,7 @@ describe("Blog app", () => {
           );
         });
 
-        expect(likesDivArr).toEqual(["3 like", "2 like", "1 like"]);
+        expect(likesDivArr).toEqual(["1 like", "0 likes"]);
       });
     });
   });

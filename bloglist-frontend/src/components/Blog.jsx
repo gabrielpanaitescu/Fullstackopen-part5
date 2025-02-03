@@ -24,7 +24,10 @@ const Blog = ({ blog, updateLikes, children }) => {
         <>
           <p>{blog.url}</p>
           <div className="likesDiv">
-            {blog.likes} <button onClick={updateLikes}>like</button>
+            {blog.likes}{" "}
+            <button onClick={updateLikes}>
+              {blog.likes === 1 ? "like" : "likes"}
+            </button>
           </div>
           <p>{blog.user.name}</p>
           {children}
